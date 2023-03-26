@@ -5,12 +5,23 @@
 import tkinter as tk
 from tkinter import ttk
 
+def calculate_BMI(h, w):
+    bmi = w / (h / 100)**2
+    if bmi > 30:
+        return "肥胖", bmi
+    elif bmi >= 25:
+        return "過重", bmi
+    elif bmi >= 18.5:
+        return "正常", bmi
+    else:
+        return "太輕", bmi
+
 class Window(tk.Tk):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
         ttkStyle = ttk.Style()
-        ttkStyle.theme_use('default')
+        ttkStyle.theme_use("default")
         ttkStyle.configure("red.TFrame", background = "red")
         ttkStyle.configure("white.TFrame", background = "white")
         ttkStyle.configure("yellow.TFrame", background = "yellow")
@@ -58,15 +69,29 @@ class Window(tk.Tk):
         messageText = tk.Text(bottomFrame,height=5,width=35, state=tk.DISABLED, takefocus = 0, bd = 0)
         messageText.grid(column=0,row=5,sticky=tk.N+tk.S,columnspan=2)
 
-        commitBtn = ttk.Button(bottomFrame,text="計算")
+        commitBtn = ttk.Button(bottomFrame,text="計算", command = self.calculate_and_show)
         commitBtn.grid(column=1,row=6,sticky=tk.W)
 
+        self.height_entry = heightEntry
+        self.weight_entry = weightEntry
+        self.message_text = messageText
 
+    def calculate_and_show(self):
+        try:
+            height = float(self.height_entry.get())
+            weight = float(self.weight_entry.get())
+            category, bmi = calculate_BMI(height, weight)
+            message = f"您的BMI是: {bmi}\n您的體重: {category}"
+        except ValueError:
+            message = "請輸入有效的數字"
 
+        self.message_text.config(state = tk.NORMAL)
+        self.message_text.delete(1.0, tk.END)
+        self.message_text.insert(tk.END, message)
+        self.message_text.config(state = tk.DISABLED)
 
-
-
-
+        
+            
 def main():
     '''
     這是程式的執行點
