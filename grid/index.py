@@ -4,6 +4,7 @@
 
 import tkinter as tk
 from tkinter import ttk
+from PIL import Image,ImageTk
 
 def calculate_BMI(h, w):
     bmi = w / (h / 100)**2
@@ -35,7 +36,7 @@ class Window(tk.Tk):
         topFrame = ttk.Frame(mainFrame, height = 100)
         topFrame.pack(fill = tk.X)
 
-        ttk.Label(topFrame, text = "BMI試算", font = ("Helvetica", "20")).pack(pady = 20)
+        ttk.Label(topFrame, text = "BMI試算", font = ("Helvetica", "20")).pack(pady = (80, 20))
 
         bottomFrame = ttk.Frame(mainFrame)
         bottomFrame.pack(expand = True, fill = tk.BOTH)
@@ -69,12 +70,38 @@ class Window(tk.Tk):
         messageText = tk.Text(bottomFrame,height=5,width=35, state=tk.DISABLED, takefocus = 0, bd = 0)
         messageText.grid(column=0,row=5,sticky=tk.N+tk.S,columnspan=2)
 
-        commitBtn = ttk.Button(bottomFrame,text="計算", command = self.calculate_and_show)
-        commitBtn.grid(column=1,row=6,sticky=tk.W)
 
+    
+
+        #---------------commitFrame_start---------------
+        
+        commitFrame = ttk.Frame(bottomFrame, style="red.TFrame")
+        commitFrame.grid(column=0,row=6,columnspan=2) 
+
+        commitBtn = ttk.Button(commitFrame,text="計算", command = self.calculate_and_show)
+        commitBtn.grid(column=0,row=0)
+        
+        clearBtn = ttk.Button(commitFrame, text="清除", command = self.clear_message_text)
+        clearBtn.grid(column=1, row=0)
+
+        #---------------commitFrame_end---------------
+
+        #---------------logoImage_start---------------
+
+        logoImage = Image.open("./logo.png")
+        resizeImage = logoImage.resize((180,45), Image.LANCZOS)
+        self.logoTkimage = ImageTk.PhotoImage(resizeImage)
+        logoLabel = ttk.Label(self,image=self.logoTkimage,width=180)
+        logoLabel.place(x=40,y=45)
+
+
+        #---------------logoImage_end---------------
+
+        
         self.height_entry = heightEntry
         self.weight_entry = weightEntry
-        self.message_text = messageText
+        self.message_text = messageText        
+       
 
     def calculate_and_show(self):
         try:
@@ -89,6 +116,11 @@ class Window(tk.Tk):
         self.message_text.delete(1.0, tk.END)
         self.message_text.insert(tk.END, message)
         self.message_text.config(state = tk.DISABLED)
+
+    def clear_message_text(self):
+        self.message_text.config(state = tk.NORMAL)
+        self.message_text.delete(1.0, tk.END)
+        self.message_text.config(state = tk.DISABLED) 
 
         
             
