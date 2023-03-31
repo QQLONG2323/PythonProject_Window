@@ -16,39 +16,41 @@ class Site(object):
         return f"站點:{self.site_name},城市:{self.county},aqi:{self.aqi}"
 
 
-class Taiwan_AQI():
+class Taiwan_AQI(list):
 
     API_KEY = "657f239f-f6e5-49fb-b8e0-966c8f789a5b"
-
-    @classmethod
-    
-    def download_AQI(cls) -> list:
+     
+    def __init__(self):
+        super().__init__()        
         
-        response = requests.get(f"https://data.epa.gov.tw/api/v2/aqx_p_432?api_key={cls.API_KEY}&limit=1000&sort=ImportDate desc&format=CSV")
+        response = requests.get(f"https://data.epa.gov.tw/api/v2/aqx_p_432?api_key={self.API_KEY}&limit=1000&sort=ImportDate desc&format=CSV")
         
         if(response.ok):            
-            #print(response.text)
-            #file = open("./Lesson17/aqi.csv", encoding = "utf-8", mode = "w")
-            #file.write(response.text)
-            #file.close()
-
             file = StringIO(response.text, newline = "")
             csvReader = csv.reader(file)
             next(csvReader)
-
-            dataList = []
             for item in csvReader:
-                site = Site(item[0], item[1], item[2])
-                dataList.append(site)
-            return dataList
-            
-
-                     
-        
-            """
-            for item in csvReader:
-                print(item[0], item[1])
-            """
-
+                if item[2] != 999:
+                    site = Site(item[0], item[1], item[2])
+                    self.append(site)       
+                                   
         else:
             raise Exception("下載失敗")
+        
+    def get_bad(self,n=3):
+        '''
+        @param n,最差的數量
+        取出AQI最差的list
+        list內的元素是Site的實體
+        '''
+        sorted_aqi = sorted(self,key=lambda site:site.aqi)
+        return sorted_aqi[-n:]
+
+    def get_better(self,n=3):
+        '''
+        @param n,最好的數量
+        取出AQI最好的list
+        list內的元素是Site的實體
+        '''
+        sorted_aqi = sorted(self,key=lambda site:site.aqi)
+        return sorted_aqi[:n]
