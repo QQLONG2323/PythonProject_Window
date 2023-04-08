@@ -103,6 +103,7 @@ class Window(tk.Tk):
         self.messageText.config(state = tk.DISABLED)
         print('清除')
 
+    #計算按鈕的功能
     def calculate_and_show(self):
 
         name = self.nameEntry.get()
@@ -121,6 +122,7 @@ class Window(tk.Tk):
             self.messageText.config(state = tk.DISABLED)
             return
         
+        #星座的功能
         birth_month = int(birth.split("/")[1])
         birth_day = int(birth.split("/")[2])
 
