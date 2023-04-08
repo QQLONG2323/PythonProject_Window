@@ -120,27 +120,48 @@ class Window(tk.Tk):
             self.messageText.insert(tk.END, message)
             self.messageText.config(state = tk.DISABLED)
             return
+        
+        birth_month = int(birth.split("/")[1])
+        birth_day = int(birth.split("/")[2])
+
+        constellation_dict = {
+            (1, 20): "水瓶座",
+            (2, 19): "雙魚座",
+            (3, 21): "牡羊座",
+            (4, 20): "金牛座",
+            (5, 21): "雙子座",
+            (6, 22): "巨蟹座",
+            (7, 23): "獅子座",
+            (8, 23): "處女座",
+            (9, 23): "天秤座",
+            (10, 24): "天蠍座",
+            (11, 23): "射手座",
+            (12, 22): "摩羯座"
+        }
+
+        for key in constellation_dict:
+            if (birth_month, birth_day) >= key:
+                constellation = constellation_dict[key]
               
         try:   
             height = float(self.heightEntry.get())            
             weight = float(self.weightEntry.get())
-            if height !=0 and weight != 0:
+            if height > 0 and weight > 0:
                 category, bmi = calculate_BMI(height, weight)
-                message = f"{name}\n您的生日是: {birth}\n您的BMI是: {bmi}\n您的體重: {category}"
+                message = f"{name}\n您的生日是: {birth}\n您的星座是: {constellation}\n您的BMI是: {bmi}\n您的體重: {category}"
             else:
-                message = "身高體重皆不可為0"       
+                message = "身高/體重皆不可為零或負數"       
         except ValueError:
             message = "請輸入有效的數字"
             
         self.messageText.config(state = tk.NORMAL)
         self.messageText.delete(0.0, tk.END)
         self.messageText.insert(tk.END, message)
-        self.messageText.config(state = tk.DISABLED)
-        
+        self.messageText.config(state = tk.DISABLED)        
 
     
 
-def close_window():
+def close_window(w):
     print("視窗關閉")
     w.destroy()
         
