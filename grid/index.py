@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter import ttk
 from PIL import Image,ImageTk
 import re
+import datetime
 
 #BMI計算式
 def calculate_BMI(h, w):
@@ -36,10 +37,11 @@ class Window(tk.Tk):
         mainFrame = ttk.Frame(self)
         mainFrame.pack(expand=True, fill=tk.BOTH, padx=30, pady=30)
 
-        topFrame = ttk.Frame(mainFrame, height = 100)
+        topFrame = ttk.Frame(mainFrame, height = 150)
         topFrame.pack(fill = tk.X)
 
-        ttk.Label(topFrame, text = "BMI試算", font = ("Helvetica", "20")).pack(pady = (80, 20))
+        title = ttk.Label(topFrame, text = "BMI試算", font = ("Helvetica", "20")) 
+        title.place(x=20,y=85)
 
         bottomFrame = ttk.Frame(mainFrame)
         bottomFrame.pack(expand = True, fill = tk.BOTH)
@@ -90,6 +92,12 @@ class Window(tk.Tk):
         self.logoPhoto = ImageTk.PhotoImage(resizeImage)
         logoLabel = ttk.Label(self, image=self.logoPhoto, width=180)
         logoLabel.place(x=40,y=45)
+
+        bmiImage = Image.open('./bmi.png')
+        bmiImageResize = bmiImage.resize((180, 54), Image.LANCZOS)
+        self.bmiPhoto = ImageTk.PhotoImage(bmiImageResize)
+        bmiLabel = ttk.Label(topFrame, image=self.bmiPhoto, width=180)
+        bmiLabel.place(x=130, y=73)
         #---------------logoImage_end---------------  
        
     #清除按鈕的功能
@@ -122,6 +130,14 @@ class Window(tk.Tk):
             self.messageText.config(state = tk.DISABLED)
             return
         
+        #年齡功能
+        now = datetime.datetime.now()
+        birth_date = datetime.datetime.strptime(birth, '%Y/%m/%d')
+        if (now.month, now.day) < (birth_date.month, birth_date.day):
+            age = now.year - birth_date.year - 1
+        else:
+            age = now.year - birth_date.year
+
         #星座的功能
         birth_month = int(birth.split("/")[1])
         birth_day = int(birth.split("/")[2])
@@ -150,11 +166,11 @@ class Window(tk.Tk):
             weight = float(self.weightEntry.get())
             if height > 0 and weight > 0:
                 category, bmi = calculate_BMI(height, weight)
-                message = f"{name}\n您的生日是: {birth}\n您的星座是: {constellation}\n您的BMI是: {bmi}\n您的體重: {category}"
+                message = f"您的姓名是: {name}\n您的生日是: {birth}\n您的年齡是: {age}\n您的星座是: {constellation}\n您的BMI是: {bmi}\n您的體重: {category}"
             else:
                 message = "身高/體重皆不可為零或負數"       
         except ValueError:
-            message = "請輸入有效的數字"
+            message = "請輸入有效的身高/體重數字"
             
         self.messageText.config(state = tk.NORMAL)
         self.messageText.delete(0.0, tk.END)
