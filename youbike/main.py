@@ -181,7 +181,7 @@ class Window(tk.Tk):
         retVal = askinteger(f"目前設定不足數量:{sbi_numbers}", "請輸入不足可借可還數量0~5", minvalue=0, maxvalue=5)
         print(retVal)
         sbi_numbers = retVal        
-        bemp_numbers = retVals
+        bemp_numbers = retVal
 
     def radio_Event(self):
 
