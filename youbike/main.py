@@ -1,6 +1,7 @@
 import datasource
 import tkinter as tk
 from tkinter import ttk
+from PIL import Image,ImageTk
 import datetime
 from tkinter.simpledialog import askinteger
 
@@ -24,6 +25,13 @@ class Window(tk.Tk):
         #main Frame
         mainFrame = ttk.Frame(self)
         mainFrame.pack(padx=30,pady=50)
+
+        #logoLabel top of top_wrapperFrame       
+        logoImage = Image.open('logo.png')
+        resizeImage = logoImage.resize((270,68),Image.LANCZOS)
+        self.logoTkimage = ImageTk.PhotoImage(resizeImage)
+        logoLabel = ttk.Label(mainFrame,image=self.logoTkimage)
+        logoLabel.pack(pady=(0,50))
 
         
         #top_wrapperFrame=================
